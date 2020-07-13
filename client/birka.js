@@ -74,9 +74,8 @@ function addJunior() {
 
   juniorList.push(new Junior(name));
   save();
-  
 
-  $("#juniorDisplay").prepend('<div class="col-md-6 col-lg-4 mb-5" id="juniorContainer-' + j.name + '">' +
+  $("#juniorDisplay").prepend('<div class="col-md-6 col-lg-4 mb-5" id="juniorContainer-' + name + '">' +
   '<div class="portfolio-item mx-auto" onclick="displayChangeModal(' + "'" + name + "'" + ')">' +
       '<div class="portfolio-item-caption d-flex align-items-center justify-content-center h-100 w-100">' +
           '<div class="portfolio-item-caption-content text-center text-white"><i class="fas fa-pen fa-2x"></i></div>' +
