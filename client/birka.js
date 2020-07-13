@@ -12,8 +12,38 @@ class Junior {
 }
 var juniorList = [];
 
+if (localStorage.getItem('juniorList') !== null) {
+  juniorList = JSON.parse(localStorage.getItem('juniorList'));
+  load();
+} 
+
+function save() {
+  localStorage.setItem('juniorList', JSON.stringify(juniorList));           
+}
+
+function load() {
+  juniorList.forEach(function(j) {
+    $("#juniorDisplay").prepend('<div class="col-md-6 col-lg-4 mb-5" id="juniorContainer-' + j.name + '">' +
+      '<div class="portfolio-item mx-auto" onclick="displayChangeModal(' + "'" + j.name + "'" + ')">' +
+        '<div class="portfolio-item-caption d-flex align-items-center justify-content-center h-100 w-100">' +
+          '<div class="portfolio-item-caption-content text-center text-white"><i class="fas fa-pen fa-2x"></i></div>' +
+        '</div>' + 
+      '<h4 class="juniorName" id="juniorLabel-' + j.name + '">' + j.name + '</h4>' + 
+  '</div></div>');
+
+  
+  })
+  validateAllWishes();
+}
+
+
+
 function removeJunior() {
-  juniorList = juniorList.filter(function(e) { return e.name !== $("#changeJuniorFormName")[0].value })
+  let name = $("#changeJuniorFormName")[0].value;
+  juniorList = juniorList.filter(function(e) { return e.name !== name });
+  $('#juniorContainer-' + name)[0].parentNode.removeChild($('#juniorContainer-' + name)[0])
+  $("#changeJuniorModal").modal('hide');
+  save();
 
 }
 
@@ -43,9 +73,10 @@ function addJunior() {
   setTimeout(function() {$("#newJuniorModal").modal('hide')}, 200); 
 
   juniorList.push(new Junior(name));
+  save();
   
 
-  $("#juniorDisplay").prepend('<div class="col-md-6 col-lg-4 mb-5">' +
+  $("#juniorDisplay").prepend('<div class="col-md-6 col-lg-4 mb-5" id="juniorContainer-' + j.name + '">' +
   '<div class="portfolio-item mx-auto" onclick="displayChangeModal(' + "'" + name + "'" + ')">' +
       '<div class="portfolio-item-caption d-flex align-items-center justify-content-center h-100 w-100">' +
           '<div class="portfolio-item-caption-content text-center text-white"><i class="fas fa-pen fa-2x"></i></div>' +
@@ -118,7 +149,7 @@ function updateWishes() {
   
 
   setTimeout(function() {$("#changeJuniorModal").modal('hide')}, 200); 
-
+  save();
 }
 
 //Kollar det användaren skrivit in i fälten på changeJuniorModal
@@ -154,7 +185,7 @@ function validateAllWishes() {
     wishes = j.wishes.filter(function(s) { if (s) { return s }})
 
     for (let i = 0; i < wishes.length; i ++) {
-      if (!juniorList.some(j => j.name == wishes[i])) {
+      if (!juniorList.lengthsome(j => j.name == wishes[i])) {
         ok = false;
         break;
       }
