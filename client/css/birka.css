@@ -3,3 +3,7 @@
     margin-top: 1em;
     margin-bottom: 1em;
 }
+
+.invalid-wishes {
+    color: red !important;
+}

@@ -67,16 +67,7 @@
                     <!-- Portfolio Items-->
 
                     <div class="col-md-6 col-lg-4 mb-5">
-                        <div class="portfolio-item mx-auto" onclick="displayChangeModal('Jonas')">
-                            <div class="portfolio-item-caption d-flex align-items-center justify-content-center h-100 w-100">
-                                <div class="portfolio-item-caption-content text-center text-white"><i class="fas fa-pen fa-2x"></i></div>
-                            </div>
-                            <h4 class="juniorName">Jonas</h4>
-                        </div>
-                    </div>
-                    
-                    <div class="col-md-6 col-lg-4 mb-5">
-                        <div class="portfolio-item mx-auto" onclick="displayAddModal()">
+                        <div class="portfolio-item mx-auto" style="background-color: #28a745;" onclick="displayAddModal()">
                             <div class="portfolio-item-caption d-flex align-items-center justify-content-center h-100 w-100">
                                 <div class="portfolio-item-caption-content text-center text-white"><i class="fas fa-plus fa-3x"></i></div>
                             </div>
@@ -158,15 +149,7 @@
                                         </div>
 
                                         <h4 class="text-secondary mb-0">Önskemål</h4>
-                                        <div id="newJuniorFormWishfields">
-                                            <div class="form-row">
-                                                <div class="col">
-                                                    <input type="text" class="form-control" id="juniorPref1" placeholder="Önskemål">
-                                                </div>
-                                                <div class="col">
-                                                    <input type="text" class="form-control"id="juniorPref2" placeholder="Önskemål">
-                                                </div>
-                                            </div>
+                                        <div id="juniorFormWishfields">
                                             
                                         </div>
 
@@ -176,7 +159,7 @@
                                     
                                     <div class="row" style="margin-top: 2em;">
                                         <div class="col-md-4">
-                                            <button class="btn btn-success" href="#">Klar</button>
+                                            <button class="btn btn-success" href="#" onclick="updateWishes()">Spara</button>
                                         </div>
                                         <div class="col-md-4">
                                             <button type="button" class="btn btn-primary" onclick="addMoreWishFields()">Fler önskemål</button>
