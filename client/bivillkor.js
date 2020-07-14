@@ -1,8 +1,9 @@
 var boatParams = [];
-  
+var bivillkor = [];
+
 if (localStorage.getItem('boatParams') !== null) {
     boatParams = JSON.parse(localStorage.getItem('boatParams'));
-  
+
     $('#noBoats').val(boatParams[0]);
     $('#minCrew').val(boatParams[1]);
     $('#maxCrew').val(boatParams[2]);
@@ -10,7 +11,24 @@ if (localStorage.getItem('boatParams') !== null) {
 
     checkValidBoats();
 
-} 
+}
+
+if (localStorage.getItem('bivillkor') !== null) {
+    bivillkor = JSON.parse(localStorage.getItem('bivillkor'));
+
+    while (bivillkor.length > $("#bvContainer div.row").length) {
+        addMoreBV();
+    }
+
+    for (let i = 0; i < bivillkor.length; i++) {
+        $('#bv' + i + '-name1').val(bivillkor[i].name1);
+        $('#bv' + i + '-name2').val(bivillkor[i].name2);
+        $('#bv' + i + '-type')[0].selectedIndex = bivillkor[i].mustSail ? 0 : 1;
+
+        validateBV(i);
+    }
+
+}
 
 function saveBoatParams() {
     boatParams[0] = $('#noBoats').val();
@@ -19,11 +37,32 @@ function saveBoatParams() {
     boatParams[3] = $('#useAllBoats')[0].selectedIndex != 0;
 
 
-    localStorage.setItem('boatParams', JSON.stringify(boatParams));           
+    localStorage.setItem('boatParams', JSON.stringify(boatParams));
 }
 
-$( document ).ready(function() {
-    $("#noBoats").change(function() {
+function saveBV() {
+    bivillkor = [];
+    for (let i = 0; i < $("#bvContainer div.row").length; i++) {
+        bivillkor[i] = {};
+        if ($('#bv' + i + '-name1').val() === "" && $('#bv' + i + '-name2').val() === "") {
+            continue;
+        }
+
+        
+        bivillkor[i].name1 = $('#bv' + i + '-name1').val();
+        bivillkor[i].name2 = $('#bv' + i + '-name2').val();
+        bivillkor[i].mustSail = $('#bv' + i + '-type')[0].selectedIndex == 0;
+    }
+
+    bivillkor = bivillkor.filter(function(e) {
+        return Object.keys(e).length != 0;
+    })
+    localStorage.setItem('bivillkor', JSON.stringify(bivillkor));
+
+}
+
+$(document).ready(function () {
+    $("#noBoats").change(function () {
         if ($("#noBoats").val() < 0) {
             $("#noBoats").val(0);
         }
@@ -35,7 +74,7 @@ $( document ).ready(function() {
         checkValidBoats();
     });
 
-    $("#minCrew").change(function() {
+    $("#minCrew").change(function () {
         if ($("#minCrew").val() < 0) {
             $("#minCrew").val(0);
         }
@@ -47,7 +86,7 @@ $( document ).ready(function() {
         checkValidBoats();
     });
 
-    $("#maxCrew").change(function() {
+    $("#maxCrew").change(function () {
         if ($("#maxCrew").val() < 0) {
             $("#maxCrew").val(0);
         }
@@ -59,6 +98,16 @@ $( document ).ready(function() {
         checkValidBoats();
     });
 
+    $('#bv0-name1').change(function () {
+        validateBV(0);
+        saveBV();
+    });
+
+    $('#bv0-name2').change(function () {
+        validateBV(0);
+        saveBV();
+    });
+
 });
 
 function checkValidBoats() {
@@ -66,7 +115,7 @@ function checkValidBoats() {
     let data = getBoatNumbers();
     let noJuniors = $("#noJuniors")[0].value;
 
-    ids.forEach(function(id) {
+    ids.forEach(function (id) {
         $(id)[0].classList.remove('is-invalid');
         $(id)[0].classList.remove('is-valid');
     });
@@ -80,8 +129,8 @@ function checkValidBoats() {
             $('#maxCrewFeedback')[0].innerHTML = 'För få platser! Öka antal båtar eller maximal besättning!';
         }
     }
-    
-    
+
+
 
     //Konstiga intervall
     if (data["minCrew"] !== "" && data["maxCrew"] !== "") {
@@ -92,9 +141,9 @@ function checkValidBoats() {
             $('#maxCrewFeedback')[0].innerHTML = "Största besättning måste vara större än minsta!";
         }
     }
-    
 
-    ids.forEach(function(id) {
+
+    ids.forEach(function (id) {
         if (!$(id).hasClass('is-invalid') && data[id.substr(1)] !== "") {
             $(id).addClass('is-valid');
         }
@@ -102,7 +151,7 @@ function checkValidBoats() {
     });
 
     saveBoatParams();
-    
+
 }
 
 function getBoatNumbers() {
@@ -114,24 +163,83 @@ function getBoatNumbers() {
     return data;
 }
 function addMoreBV() {
-    let n = $("#bvContainer div.row").length - 1;
-  
-  
-      $('#bvContainer').append('' + 
+    let n = $("#bvContainer div.row").length;
+
+
+    $('#bvContainer').append('' +
         '<div class="row" style="margin-top: 1em">' +
         '<div class="col-md-4">' +
-            '<input type="Text" class="form-control" id="bv' + n + '-name1" placeholder="Namn" >' +
-            '<div class="invalid-feedback" id="bv' + n + '-name1-feedback"></div>' +
+        '<input type="Text" class="form-control" id="bv' + n + '-name1" placeholder="Namn" >' +
+        '<div class="invalid-feedback" id="bv' + n + '-name1-feedback"></div>' +
         '</div>' +
         '<div class="col-md-4">' +
-            '<select id="bv1-type" class="form-control">' +
-                '<option selected>Måste segla med</option>' +
-                '<option>Får inte segla med</option>' +
-              '</select>' +
+        '<select id="bv' + n + '-type" class="form-control">' +
+        '<option selected>Måste segla med</option>' +
+        '<option>Får inte segla med</option>' +
+        '</select>' +
         '</div>' +
         '<div class="col-md-4">' +
-            '<input type="Text" class="form-control" id="bv' + n + '-name2" placeholder="Namn" >' +
-            '<div class="invalid-feedback" id="bv' + n + '-name2-feedback"></div>' +
+        '<input type="Text" class="form-control" id="bv' + n + '-name2" placeholder="Namn" >' +
+        '<div class="invalid-feedback" id="bv' + n + '-name2-feedback"></div>' +
         '</div>' +
-    '</div>');
+        '</div>');
+
+    $('#bv' + n + '-name1').change(function () {
+        validateBV(n);
+        saveBV();
+    });
+
+    $('#bv' + n + '-name2').change(function () {
+        validateBV(n);
+        saveBV();
+    });
+
+    $('#bv' + n + '-type').change(function () {
+        saveBV();
+    });
+
+}
+
+function validateBV(i) {
+    let name1 = $('#bv' + i + '-name1');
+    let name2 = $('#bv' + i + '-name2');
+    name1[0].classList.remove('is-valid', 'is-invalid');
+    name2[0].classList.remove('is-valid', 'is-invalid');
+
+    if (name1.val() !== "") {
+        if (juniorList.some(j => j.name == name1.val())) {
+            name1.addClass('is-valid');
+        } else {
+            name1.addClass('is-invalid');
+            $('#bv' + i + '-name1-feedback')[0].innerHTML = 'Junioren finns inte.'
+        }
+    } 
+
+    if (name2.val() !== "") {
+        if (juniorList.some(j => j.name == name2.val())) {
+            name2.addClass('is-valid');
+        } else {
+            name2.addClass('is-invalid');
+            $('#bv' + i + '-name2-feedback')[0].innerHTML = 'Junioren finns inte.'
+        }
+    }
+
+    if (name1.val() == name2.val() && name1.val() !== "") {
+        name1.addClass('is-invalid');
+        $('#bv' + i + '-name1-feedback')[0].innerHTML = 'Orimligt bivillkor.'
+        name2.addClass('is-invalid');
+        $('#bv' + i + '-name2-feedback')[0].innerHTML = 'Orimligt bivillkor.'
+
+    }
+
+    if (name1.val() === "" && name2.val() !== "") {
+        name1.addClass('is-invalid');
+        $('#bv' + i + '-name1-feedback')[0].innerHTML = 'Får inte vara tom.'
+    }
+
+    if (name2.val() === "" && name1.val() !== "") {
+        name2.addClass('is-invalid');
+        $('#bv' + i + '-name2-feedback')[0].innerHTML = 'Får inte vara tom.'
+    }
+
 }

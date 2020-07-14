@@ -97,7 +97,13 @@ var juniorList = [];
     $("#newJuniorFormNameContainer").html('<h4 class="text-secondary mb-0">Namn</h4>' +
           '<input type="text" class="form-control" id="newJuniorFormName" placeholder="Namn"></input>');
     $("#newJuniorModal").modal();
+
   }
+
+$('#newJuniorModal').on('shown.bs.modal', function () {
+    $('#newJuniorFormName').focus();
+});
+
   
   //Visar ändra junior-modal
   //Resettar allt och sätter namnet till rätt
@@ -131,7 +137,13 @@ var juniorList = [];
     }
     
     validateWishes(name);
+
+
   }
+
+  $('#changeJuniorModal').on('shown.bs.modal', function () {
+    $('#juniorPref0').focus();
+});
   
   //Körs när man trycker klar
   //Validerar och uppdaterar

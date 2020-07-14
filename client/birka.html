@@ -29,7 +29,7 @@
                         </li>
                         <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#about">Bivillkor</a>
                         </li>
-                        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#contact">Kör</a>
+                        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#contact">Kör algoritmen</a>
                         </li>
                     </ul>
                 </div>
@@ -225,9 +225,7 @@
                     <div class="divider-custom-line"></div>
                 </div>
                 <!-- BV Section Content-->
-                <div class="text-center">
-                    <h3>Båtparametrar</h3>
-                </div>
+                
 
                 <!-- Båtparametrar Content-->
                 <form>
@@ -263,38 +261,37 @@
                 </form>
 
                  <!-- Tvingande BV Content-->
-                <div class="text-center" style="margin-top: 2em">
-                    <h3>Tvingande bivillkor</h3>
-                </div>
+                
 
                 <form>
-                    <div class="form-group" id="bvContainer">
-                        <div class="row">
-                            <div class="col-md-4 text-center">
-                                <h4 class="text-secondary mb-0">Namn</h4>
-                            </div>
-                            <div class="col-md-4 text-center">
-                                <h4 class="text-secondary mb-0">Typ</h4>
-                            </div>
-                            <div class="col-md-4 text-center">
-                                <h4 class="text-secondary mb-0">Namn</h4>
-                            </div>
+                    <div class="row">
+                        <div class="col-md-4 text-center">
+                            <h4 class="text-secondary mb-0">Namn</h4>
                         </div>
+                        <div class="col-md-4 text-center">
+                            <h4 class="text-secondary mb-0">Typ</h4>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <h4 class="text-secondary mb-0">Namn</h4>
+                        </div>
+                    </div>
+                    <div class="form-group" id="bvContainer">
+                        
                         <div class="row">
                             <div class="col-md-4">
-                                <input type="Text" class="form-control" id="bv1-name1" placeholder="Namn" >
-                                <div class="invalid-feedback" id="bv1-name1-feedback"></div>
+                                <input type="Text" class="form-control" id="bv0-name1" placeholder="Namn" >
+                                <div class="invalid-feedback" id="bv0-name1-feedback"></div>
                             </div>
                             <div class="col-md-4">
-                                <select id="bv1-type" class="form-control">
+                                <select id="bv0-type" class="form-control">
                                     <option selected>Måste segla med</option>
                                     <option>Får inte segla med</option>
                                   </select>
                             </div>
 
                             <div class="col-md-4">
-                                <input type="Text" class="form-control" id="bv1-name2" placeholder="Namn" >
-                                <div class="invalid-feedback" id="bv1-name2-feedback"></div>
+                                <input type="Text" class="form-control" id="bv0-name2" placeholder="Namn" >
+                                <div class="invalid-feedback" id="bv0-name2-feedback"></div>
                             </div>
                         </div>
                         
@@ -311,9 +308,9 @@
         </section>
         <section class="page-section" id="contact">
             <div class="container">
-                <!-- Contact Section Heading-->
+                <!-- Run Section Heading-->
                 <div class="text-center">
-                    <h2 class="page-section-heading text-secondary d-inline-block mb-0">Kör</h2>
+                    <h2 class="page-section-heading text-secondary d-inline-block mb-0">Kör algoritmen</h2>
                 </div>
                 <!-- Icon Divider-->
                 <div class="divider-custom">
@@ -321,22 +318,11 @@
                     <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
                     <div class="divider-custom-line"></div>
                 </div>
-                <!-- Contact Section Content-->
-                <div class="row justify-content-center">
-                    <div class="col-lg-4">
-                        <div class="d-flex flex-column align-items-center">
-                            <div class="icon-contact mb-3"><i class="fas fa-mobile-alt"></i></div>
-                            <div class="text-muted">Phone</div>
-                            <div class="lead font-weight-bold">(555) 555-5555</div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="d-flex flex-column align-items-center">
-                            <div class="icon-contact mb-3"><i class="far fa-envelope"></i></div>
-                            <div class="text-muted">Email</div><a class="lead font-weight-bold" href="mailto:name@example.com">name@example.com</a>
-                        </div>
-                    </div>
+                <!-- Run Section Content-->
+                <div class="text-center">
+                    <button type="button" id="runButton" class="btn btn-secondary btn-lg shaker" onclick="run()">Optimera</button>
                 </div>
+                
             </div>
         </section>
         <footer class="footer text-center">
@@ -375,5 +361,6 @@
         <!-- Egen JS-->
         <script src="juniors.js"></script>
         <script src="bivillkor.js"></script>
+        <script src="run.js"></script>
     </body>
 </html>
