@@ -48,8 +48,22 @@
                 </div>
                 <!-- Masthead Subheading-->
                 <p class="pre-wrap masthead-subheading font-weight-light mb-0">Skapa perfekta båtar</p>
+
+                <div class="row">
+                    <div class="col-lg-4 ml-auto">
+                        <p class="pre-wrap lead" style="text-align: left;">Freelancer is a free bootstrap theme created by Start Bootstrap. The download includes the complete source files including HTML, CSS, and JavaScript as well as optional SASS stylesheets for easy customization.</p>
+                    </div>
+                    <div class="col-lg-4 mr-auto">
+                        <p class="pre-wrap lead" style="text-align: left;">You can create your own custom avatar for the masthead, change the icon in the dividers, and add your email address to the contact form to make it fully functional!</p>
+                    </div>
+                </div>
+
+                
             </div>
+
+            
         </header>
+
         <section class="page-section portfolio" id="portfolio">
             <div class="container">
                 <!-- Portfolio Section Heading-->
@@ -67,7 +81,7 @@
                     <!-- Portfolio Items-->
 
                     <div class="col-md-6 col-lg-4 mb-5">
-                        <div class="portfolio-item mx-auto" style="background-color: #28a745;" onclick="displayAddModal()">
+                        <div class="portfolio-item mx-auto" style="background-color: #a3bfe9    ;" onclick="displayAddModal()">
                             <div class="portfolio-item-caption d-flex align-items-center justify-content-center h-100 w-100">
                                 <div class="portfolio-item-caption-content text-center text-white"><i class="fas fa-plus fa-3x"></i></div>
                             </div>
@@ -76,6 +90,22 @@
                     </div>
                     
                 </div>
+
+                <form>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h4 class="text-secondary mb-0">Antal juniorer</h4>
+                                <input type="text" class="form-control" id="noJuniors" placeholder="0" disabled>
+                            </div>
+                            <div class="col-md-6">
+                                <h4 class="text-secondary mb-0">Status</h4>
+                                <input type="text" class="form-control is-valid" id="juniorStatus" placeholder="Alla önskemål kan kopplas" disabled>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </form>
             </div>
         </section>
         <!-- Portfolio Modal-->
@@ -158,13 +188,16 @@
                                     </form>
                                     
                                     <div class="row" style="margin-top: 2em;">
-                                        <div class="col-md-4">
+                                        <div class="col-md-3">
                                             <button class="btn btn-success" href="#" onclick="updateWishes()">Spara</button>
                                         </div>
-                                        <div class="col-md-4">
+                                        <div class="col-md-3">
+                                            <button class="btn btn-secondary" href="#" onclick="validateWishes()">Kontrollera</button>
+                                        </div>
+                                        <div class="col-md-3">
                                             <button type="button" class="btn btn-primary" onclick="addMoreWishFields()">Fler önskemål</button>
                                         </div>
-                                        <div class="col-md-4">
+                                        <div class="col-md-3">
                                             <button class="btn btn-danger" href="#" onclick="removeJunior()">Ta bort junior</button>
                                         </div>
 
@@ -181,7 +214,7 @@
         
         <section class="page-section bg-primary text-white mb-0" id="about">
             <div class="container">
-                <!-- About Section Heading-->
+                <!-- BV Section Heading-->
                 <div class="text-center">
                     <h2 class="page-section-heading d-inline-block text-white">Bivillkor</h2>
                 </div>
@@ -191,15 +224,89 @@
                     <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
                     <div class="divider-custom-line"></div>
                 </div>
-                <!-- About Section Content-->
-                <div class="row">
-                    <div class="col-lg-4 ml-auto">
-                        <p class="pre-wrap lead">Freelancer is a free bootstrap theme created by Start Bootstrap. The download includes the complete source files including HTML, CSS, and JavaScript as well as optional SASS stylesheets for easy customization.</p>
-                    </div>
-                    <div class="col-lg-4 mr-auto">
-                        <p class="pre-wrap lead">You can create your own custom avatar for the masthead, change the icon in the dividers, and add your email address to the contact form to make it fully functional!</p>
-                    </div>
+                <!-- BV Section Content-->
+                <div class="text-center">
+                    <h3>Båtparametrar</h3>
                 </div>
+
+                <!-- Båtparametrar Content-->
+                <form>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h4 class="text-secondary mb-0">Antal båtar</h4>
+                                <input type="number" min="0" step="1" class="form-control" id="noBoats" placeholder="0" >
+                                <div class="invalid-feedback" id="noBoatsFeedback"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <h4 class="text-secondary mb-0">Alla båtar måste användas</h4>
+                                <select id="useAllBoats" class="form-control">
+                                    <option selected>Nej</option>
+                                    <option>Ja</option>
+                                  </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h4 class="text-secondary mb-0">Minsta besättning</h4>
+                                <input type="number" min="0" step="1" class="form-control" id="minCrew" placeholder="Minsta möjliga besättning" >
+                                <div class="invalid-feedback" id="minCrewFeedback"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <h4 class="text-secondary mb-0">Största besättning</h4>
+                                <input type="number" min="0" step="1" class="form-control" id="maxCrew" placeholder="Största möjliga besättning" >
+                                <div class="invalid-feedback" id="maxCrewFeedback"></div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </form>
+
+                 <!-- Tvingande BV Content-->
+                <div class="text-center" style="margin-top: 2em">
+                    <h3>Tvingande bivillkor</h3>
+                </div>
+
+                <form>
+                    <div class="form-group" id="bvContainer">
+                        <div class="row">
+                            <div class="col-md-4 text-center">
+                                <h4 class="text-secondary mb-0">Namn</h4>
+                            </div>
+                            <div class="col-md-4 text-center">
+                                <h4 class="text-secondary mb-0">Typ</h4>
+                            </div>
+                            <div class="col-md-4 text-center">
+                                <h4 class="text-secondary mb-0">Namn</h4>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <input type="Text" class="form-control" id="bv1-name1" placeholder="Namn" >
+                                <div class="invalid-feedback" id="bv1-name1-feedback"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <select id="bv1-type" class="form-control">
+                                    <option selected>Måste segla med</option>
+                                    <option>Får inte segla med</option>
+                                  </select>
+                            </div>
+
+                            <div class="col-md-4">
+                                <input type="Text" class="form-control" id="bv1-name2" placeholder="Namn" >
+                                <div class="invalid-feedback" id="bv1-name2-feedback"></div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </form>
+
+                <div class="text-center">
+                    <button type="button" class="btn btn-secondary" onclick="addMoreBV()">Fler tvingande bivillkor</button>
+                </div>
+
+
+                
             </div>
         </section>
         <section class="page-section" id="contact">
@@ -265,5 +372,8 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
         <!-- Core theme JS-->
         <script src="birka.js"></script>
+        <!-- Egen JS-->
+        <script src="juniors.js"></script>
+        <script src="bivillkor.js"></script>
     </body>
 </html>
