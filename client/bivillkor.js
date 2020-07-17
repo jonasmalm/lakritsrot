@@ -1,13 +1,14 @@
-var boatParams = [];
+var boatParams = {};
 var bivillkor = [];
+ 
 
 if (localStorage.getItem('boatParams') !== null) {
     boatParams = JSON.parse(localStorage.getItem('boatParams'));
 
-    $('#noBoats').val(boatParams[0]);
-    $('#minCrew').val(boatParams[1]);
-    $('#maxCrew').val(boatParams[2]);
-    $('#useAllBoats')[0].selectedIndex = boatParams[3] == false ? 0 : 1;
+    $('#noBoats').val(boatParams.noBoats);
+    $('#minCrew').val(boatParams.minCrew);
+    $('#maxCrew').val(boatParams.maxCrew);
+    $('#useAllBoats')[0].selectedIndex = boatParams.useAllBoats == false ? 0 : 1;
 
     checkValidBoats();
 
@@ -31,10 +32,10 @@ if (localStorage.getItem('bivillkor') !== null) {
 }
 
 function saveBoatParams() {
-    boatParams[0] = $('#noBoats').val();
-    boatParams[1] = $('#minCrew').val();
-    boatParams[2] = $('#maxCrew').val();
-    boatParams[3] = $('#useAllBoats')[0].selectedIndex != 0;
+    boatParams.noBoats = $('#noBoats').val();
+    boatParams.minCrew = $('#minCrew').val();
+    boatParams.maxCrew = $('#maxCrew').val();
+    boatParams.useAllBoats = $('#useAllBoats')[0].selectedIndex != 0;
 
 
     localStorage.setItem('boatParams', JSON.stringify(boatParams));

@@ -182,6 +182,7 @@ $('#newJuniorModal').on('shown.bs.modal', function () {
   
     for (let i = 0; i < $("#juniorFormWishfields div.col").length; i ++) {
       let inputField = $("#juniorPref" + i);
+      inputField[0].classList.remove('is-valid', 'is-invalid');
   
       if (inputField[0].value) {
         if (juniorList.some(j => j.name == inputField[0].value) && inputField[0].value !== name) {
