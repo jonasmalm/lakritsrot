@@ -3,6 +3,7 @@ from ortools.linear_solver import pywraplp
 import numpy
 
 
+
 bp = Blueprint('optimize', __name__)
 
 
@@ -17,10 +18,6 @@ def recieve_data():
     boat_parameters['minCrew'] = int(boat_parameters['minCrew'])
     boat_parameters['maxCrew'] = int(boat_parameters['maxCrew'])
     boat_parameters['noBoats'] = int(boat_parameters['noBoats'])
-    
-    print(constraints)
-    print(boat_parameters)
-    print(juniors)
     
     variables = {}
     variables['x'] = create_x_var(solver, juniors, boat_parameters['noBoats'])
@@ -44,6 +41,8 @@ def recieve_data():
     
     #maximize z : v + sum{i in JUNIORER, j in JUNIORER, b in BATAR} p[i,j]*y[i,j,b];
     
+    #Debug - skriv ut hela modellen!
+    print(solver.ExportModelAsLpFormat(False).replace('\\', '').replace(',_', ','), sep='\n')
     
     status = solver.Solve()
     if status == pywraplp.Solver.OPTIMAL:
@@ -51,8 +50,11 @@ def recieve_data():
         
     else:
         print('The problem does not have an optimal solution.')
+        return dict(success=False)
     
-    return 'Ok', 200
+    retval = create_retval(variables, juniors, boat_parameters['noBoats'])
+    print(retval)
+    return jsonify(retval)
 
 #x[i, b] är 1 om jun i sitter i båt b, noll annars
 def create_x_var(solver, juniors, no_boats):
@@ -147,8 +149,22 @@ def create_custom_constraints(solver, variables, constraints, juniors, boat_para
             solver.Add(solver.Sum(constraint_exp) <= 1)
             
         
+def create_retval(variables, juniors, no_boats):
+    
+    retval = {}
+    retval['boats'] = {}
     
     
+    for b in range(no_boats):
+        retval['boats'][b] = []
+        for i in range(len(juniors)):
+            if variables['x'][i, b].solution_value() == 1:
+                retval['boats'][b].append(juniors[i]['name'])
+                
+    retval['success'] = True
+    
+    return retval
+        
     
         
     
