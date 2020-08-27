@@ -12,12 +12,12 @@ function optimize() {
 
     if (!canRun()) {
         $('#runButton').addClass('btn-danger');
-        $('#runButton')[0].innerHTML = 'Kan inte köras...';
+        $('#runButton')[0].innerHTML = 'Det finns problem i din modell...';
         setTimeout(function() {
             $('#runButton').removeClass('btn-danger');
             $('#runButton')[0].innerHTML = 'Optimera';
             $('#runButton').addClass('shaker');
-        }, 1000);
+        }, 3000);
         return 0;
 
     }
@@ -64,7 +64,7 @@ function optimize() {
                 //Om båten inte är tom (kan hända!)
                 if (!$.isEmptyObject(response.boats[i])) {
                     let boatHTML = '<div class="col-md-6 col-lg-4 mb-5">' +
-                    '<div class="portfolio-item mx-auto" style="background-color: #a3bfe9; padding-bottom: 1em;">' +
+                    '<div class="portfolio-item mx-auto" style="background-color: #a3bfe9; padding-bottom: 1em; cursor: default;">' +
                         
                         '<h4 class="juniorName">Båt ' +  n + '</h4>';
                     n ++

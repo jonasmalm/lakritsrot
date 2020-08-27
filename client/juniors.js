@@ -1,4 +1,3 @@
-//Min kod överst
 class Junior {
     constructor (name) {
       this.name = name;
@@ -36,6 +35,22 @@ var juniorList = [];
     })
     validateAllWishes();
     $("#noJuniors")[0].value = juniorList.length;
+  }
+
+  function resetAll() {
+    juniorList = [];
+    localStorage.setItem('juniorList', JSON.stringify(juniorList));
+
+    boatParams = {};
+    localStorage.setItem('boatParams', JSON.stringify(boatParams));
+
+    bivillkor = [];
+    localStorage.setItem('bivillkor', JSON.stringify(bivillkor));
+
+    location.reload();
+    
+    
+    
   }
   
   

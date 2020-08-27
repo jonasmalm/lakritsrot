@@ -25,11 +25,11 @@
                 <button class="navbar-toggler navbar-toggler-right font-weight-bold bg-primary text-white rounded" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">Menu <i class="fas fa-bars"></i></button>
                 <div class="collapse navbar-collapse" id="navbarResponsive">
                     <ul class="navbar-nav ml-auto">
-                        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#portfolio">Juniorer</a>
+                        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#portfolio">Juniorerna</a>
                         </li>
-                        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#about">Bivillkor</a>
+                        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#about">Bivillkoren</a>
                         </li>
-                        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#contact">Kör algoritmen</a>
+                        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#contact">Resultatet</a>
                         </li>
                     </ul>
                 </div>
@@ -47,20 +47,21 @@
                     <div class="divider-custom-line"></div>
                 </div>
                 <!-- Masthead Subheading-->
-                <p class="pre-wrap masthead-subheading font-weight-light mb-0">Skapa perfekta båtar</p>
+                <p class="pre-wrap masthead-subheading font-weight-light mb-0">Lakritsrötter utan en död sekro</p>
 
-                <div class="row">
+                <div class="row" style="margin-top: 2em">
                     <div class="col-lg-4 ml-auto">
-                        <p class="pre-wrap lead" style="text-align: left;">Freelancer is a free bootstrap theme created by Start Bootstrap. The download includes the complete source files including HTML, CSS, and JavaScript as well as optional SASS stylesheets for easy customization.</p>
+                        <p class="pre-wrap lead" style="text-align: left;">Birkaalgoritmen finns till för att spara tid åt sekro! Fyll i juniorer och deras önskningar; hur många båtar som ska seglas, storleken på besättningen och eventuella krav på vilka som måste sitta eller inte får sitta tillsammans. Sedan är det bara att köra!</p>
                     </div>
                     <div class="col-lg-4 mr-auto">
-                        <p class="pre-wrap lead" style="text-align: left;">You can create your own custom avatar for the masthead, change the icon in the dividers, and add your email address to the contact form to make it fully functional!</p>
-                    </div>
+                        <p class="pre-wrap lead" style="text-align: left;">Algoritmen försöker att uppfylla så många önskningar som möjligt efter att ha uppfyllt de tvingande bivillkoren. Den får "poäng" för att uppfylla en önskning och poängen i båten med minst antal uppfyllda önskningar räknas dubbelt för att jämna ut resultatet.</p><div>
                 </div>
 
                 
-            </div>
 
+                
+            </div>
+            
             
         </header>
 
@@ -312,6 +313,7 @@
                 <div class="text-center">
                     <h2 class="page-section-heading text-secondary d-inline-block mb-0">Kör algoritmen</h2>
                 </div>
+                
                 <!-- Icon Divider-->
                 <div class="divider-custom">
                     <div class="divider-custom-line"></div>
@@ -319,48 +321,61 @@
                     <div class="divider-custom-line"></div>
                 </div>
                 <!-- Run Section Content-->
-                <div class="text-center">
-                    <button type="button" id="runButton" class="btn btn-secondary btn-lg shaker" style="margin-bottom: 2em;" onclick="optimize()">Optimera</button>
+                <div class="row justify-content-md-center">
+                    <div class="text-center col-2">
+                        <button type="button" id="runButton" class="btn btn-secondary btn-lg shaker" style="margin-bottom: 2em;" onclick="optimize()">Optimera</button>
+                    </div>
+                    <div class="text-center col-2">
+                        <button type="button" class="btn btn-secondary btn-lg" data-toggle="modal" data-target="#reset-all-modal">Nollställ</button>
+                    </div>
+
                 </div>
+                
 
                 <div class="row justify-content-center" id="resultDisplay">
-                    <!-- Portfolio Items-->
-
-                    <div class="col-md-6 col-lg-4 mb-5">
-                        <div class="portfolio-item mx-auto" style="background-color: #a3bfe9; padding-bottom: 1em;">
-                            
-                            <h4 class="juniorName">Båt 1</h4>
-                            <div class="row">
-                                <div class="col" style="text-align: center">
-                                    <h5>Jonas</h5>
-                                </div>
-                                <div class="col">
-                                    <h5 style="text-align: center">10</h5>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <!-- Båtar i resultatet hamnar här-->
                     
                 </div>
                 
             </div>
         </section>
+        <!-- Nollställsmodal -->
+        <div class="modal" tabindex="-1" role="dialog" id="reset-all-modal">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Vill du verkligen ta bort allt?</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <p>Genom att klicka 'Ta bort' tar du bort all lagrad information hittills: juniorer, önskemål och bivillkor.</p>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="resetAll()">Ta bort</button>
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Avbryt</button>
+                </div>
+              </div>
+            </div>
+        </div>
         <footer class="footer text-center">
             <div class="container">
                 <div class="row">
                     <!-- Footer Location-->
                     <div class="col-lg-4 mb-5 mb-lg-0">
-                        <h4 class="mb-4">LOCATION</h4>
-                        <p class="pre-wrap lead mb-0">2215 John Daniel Drive Clark, MO 65243</p>
+                        <h4 class="mb-4">TACK TILL</h4>
+                        <p class="pre-wrap lead mb-0"><a href="https://users.mai.liu.se/nilqu94/">Nils-Hassan Quttineh</a> för hjälp med algoritmen</p>
                     </div>
                     <!-- Footer Social Icons-->
                     <div class="col-lg-4 mb-5 mb-lg-0">
-                        <h4 class="mb-4">AROUND THE WEB</h4><a class="btn btn-outline-light btn-social mx-1" href="https://www.facebook.com/StartBootstrap"><i class="fab fa-fw fa-facebook-f"></i></a><a class="btn btn-outline-light btn-social mx-1" href="https://www.twitter.com/sbootstrap"><i class="fab fa-fw fa-twitter"></i></a><a class="btn btn-outline-light btn-social mx-1" href="https://www.linkedin.com/in/startbootstrap"><i class="fab fa-fw fa-linkedin-in"></i></a><a class="btn btn-outline-light btn-social mx-1" href="https://www.dribble.com/startbootstrap"><i class="fab fa-fw fa-dribbble"></i></a>
+                        <h4 class="mb-4">SKAPAD AV</h4>
+                        <p class="pre-wrap lead mb-0">Jonas Malm</p>
                     </div>
                     <!-- Footer About Text-->
                     <div class="col-lg-4">
-                        <h4 class="mb-4">ABOUT FREELANCER</h4>
-                        <p class="pre-wrap lead mb-0">Freelance is a free to use, MIT licensed Bootstrap theme created by Start Bootstrap</p>
+                        <h4 class="mb-4">SKAPAD MED</h4>
+                        <a class="pre-wrap lead mb-0" href="https://developers.google.com/optimization">Google OR-Tools</a>
                     </div>
                 </div>
             </div>
