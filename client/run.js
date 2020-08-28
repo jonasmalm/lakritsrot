@@ -1,4 +1,19 @@
 function canRun() {
+    //Inga juniorer --> Kör ej
+    if (juniorList.length == 0) {
+        return false;
+    }
+
+    //Inte fyllt i alla siffror --> Kör ej
+    let data = getBoatNumbers();
+    if (Object.values(data).some(num => num == '')) {
+        return false;
+    }
+
+    //Uppdatera is-invalid genom kontroll av rimlighet (finns tillräckligt med platser osv)
+    checkValidBoats();
+    
+    //Är något inputfält rödmarkerat?
     if ($('input.is-invalid').length > 0) {
         return false;
     }
@@ -15,7 +30,7 @@ function optimize() {
         $('#runButton')[0].innerHTML = 'Det finns problem i din modell...';
         setTimeout(function() {
             $('#runButton').removeClass('btn-danger');
-            $('#runButton')[0].innerHTML = 'Optimera';
+            $('#runButton')[0].innerHTML = 'Optimera!';
             $('#runButton').addClass('shaker');
         }, 3000);
         return 0;
@@ -48,7 +63,7 @@ function optimize() {
 
                 setTimeout(function() {
                     $('#runButton').removeClass('btn-danger');
-                    $('#runButton')[0].innerHTML = 'Optimera';
+                    $('#runButton')[0].innerHTML = 'Optimera!';
                     $('#runButton').addClass('shaker');
                 }, 5000);
                 return null

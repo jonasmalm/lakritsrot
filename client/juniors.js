@@ -28,7 +28,7 @@ var juniorList = [];
           '<div class="portfolio-item-caption d-flex align-items-center justify-content-center h-100 w-100">' +
             '<div class="portfolio-item-caption-content text-center text-white"><i class="fas fa-pen fa-2x"></i></div>' +
           '</div>' + 
-        '<h4 class="juniorName" id="juniorLabel-' + j.name + '">' + j.name + '</h4>' + 
+        '<h4 class="juniorName" id="juniorLabel-' + j.name.replace(/ /g, '-') + '">' + j.name + '</h4>' + 
     '</div></div>');
   
     
@@ -70,7 +70,10 @@ var juniorList = [];
   function addJunior() {
     let name = $("#newJuniorFormName")[0].value;
   
-    if (juniorList.some(j => j.name == name)) {
+    //HTML klarar inte ID:n med mellanslag
+    //Därför får t.ex. junior Jonas M ID Jonas-M
+    //Skapar man en 'Jonas M' och en 'Jonas-M' fårv i problem! Detta löser det! :)
+    if (juniorList.some(j => j.name.replace(/ /g, '-') == name.replace(/ /g, '-'))) {
   
       $("#newJuniorFormNameContainer").html('<h4 class="text-secondary mb-0">Namn</h4>' +
           '<input type="text" class="form-control is-invalid" id="newJuniorFormName" placeholder="Namn"></input>' +
@@ -90,7 +93,8 @@ var juniorList = [];
     }
   
     $("#newJuniorFormName").addClass('is-valid');
-    setTimeout(function() {$("#newJuniorModal").modal('hide')}, 200); 
+    setTimeout(function() {$("#newJuniorModal").modal('hide')}, 100); 
+    setTimeout(function() {displayChangeModal(name)}, 150);
     
   
     $("#juniorDisplay").prepend('<div class="col-md-6 col-lg-4 mb-5" id="juniorContainer-' + name + '">' +
@@ -98,7 +102,7 @@ var juniorList = [];
         '<div class="portfolio-item-caption d-flex align-items-center justify-content-center h-100 w-100">' +
             '<div class="portfolio-item-caption-content text-center text-white"><i class="fas fa-pen fa-2x"></i></div>' +
         '</div>' + 
-        '<h4 class="juniorName" id="juniorLabel-' + name + '">' + name + '</h4>' + 
+        '<h4 class="juniorName" id="juniorLabel-' + name.replace(/ /g, '-') + '">' + name + '</h4>' + 
     '</div></div>');
   
     juniorList.push(new Junior(name));
@@ -210,10 +214,10 @@ $('#newJuniorModal').on('shown.bs.modal', function () {
     }
   
     if (!ok) {
-      $('#juniorLabel-' + name).addClass('invalid-wishes');
+      $('#juniorLabel-' + name.replace(/ /g, '-')).addClass('invalid-wishes');
       setJuniorStatus(false);
-    } else if ($('#juniorLabel-' + name)[0].classList.contains('invalid-wishes')) {
-        $('#juniorLabel-' + name).removeClass('invalid-wishes');
+    } else if ($('#juniorLabel-' + name.replace(/ /g, '-'))[0].classList.contains('invalid-wishes')) {
+        $('#juniorLabel-' + name.replace(/ /g, '-')).removeClass('invalid-wishes');
     }
   
     validateAllWishes();
@@ -236,9 +240,9 @@ $('#newJuniorModal').on('shown.bs.modal', function () {
       }
   
       if (!ok) {
-        $('#juniorLabel-' + j.name).addClass('invalid-wishes');
-      } else if ($('#juniorLabel-' + j.name)[0].classList.contains('invalid-wishes')) {
-          $('#juniorLabel-' + j.name).removeClass('invalid-wishes');
+        $('#juniorLabel-' + j.name.replace(/ /g, '-')).addClass('invalid-wishes');
+      } else if ($('#juniorLabel-' + j.name.replace(/ /g, '-'))[0].classList.contains('invalid-wishes')) {
+          $('#juniorLabel-' + j.name.replace(/ /g, '-')).removeClass('invalid-wishes');
       }
   
   
@@ -271,6 +275,8 @@ $('#newJuniorModal').on('shown.bs.modal', function () {
           '<input type="text" class="form-control" id="juniorPref' + (length + 1) + '" placeholder="Önskemål">' + 
       '</div>' +
       '</div>');
+
+      setTimeout(function() {$('#juniorPref' + length).focus() }, 100);
   }
   
   

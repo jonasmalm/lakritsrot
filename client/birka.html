@@ -69,7 +69,7 @@
             <div class="container">
                 <!-- Portfolio Section Heading-->
                 <div class="text-center">
-                    <h2 class="page-section-heading text-secondary mb-0 d-inline-block">Juniorer</h2>
+                    <h2 class="page-section-heading text-secondary mb-0 d-inline-block">Juniorerna</h2>
                 </div>
                 <!-- Icon Divider-->
                 <div class="divider-custom">
@@ -92,7 +92,7 @@
                     
                 </div>
 
-                <form>
+                <form onSubmit="return false;">
                     <div class="form-group">
                         <div class="row">
                             <div class="col-md-6">
@@ -128,23 +128,25 @@
                                         <div class="divider-custom-line"></div>
                                     </div>
 
-                                    <form>
+                                    <form onSubmit="return false;">
                                         <div class="form-group" id="newJuniorFormNameContainer">
                                             <h4 class="text-secondary mb-0">Namn</h4>
                                             <input type="text" class="form-control" id="newJuniorFormName" placeholder="Namn">
                                         </div>
+
+                                        <div class="row" style="margin-top: 2em;">
+                                            <div class="col-md-6">
+                                                <button type="submit" class="btn btn-success" href="#" onclick="addJunior()">Lägg till</button>
+                                            </div>
+                                            
+                                            <div class="col-md-6">
+                                                <button type="button" class="btn btn-danger" href="#" data-dismiss="modal">Avbryt</button>
+                                            </div>
+    
+                                        </div>
                                     </form>
                                     
-                                    <div class="row" style="margin-top: 2em;">
-                                        <div class="col-md-6">
-                                            <button class="btn btn-success" href="#" onclick="addJunior()">Lägg till</button>
-                                        </div>
-                                        
-                                        <div class="col-md-6">
-                                            <button class="btn btn-danger" href="#" data-dismiss="modal">Avbryt</button>
-                                        </div>
-
-                                    </div>
+                                    
                                     
                                 </div>
                             </div>
@@ -173,7 +175,7 @@
                                         <div class="divider-custom-line"></div>
                                     </div>
 
-                                    <form>
+                                    <form onSubmit="return false;">
                                         <div class="form-group">
                                             <h4 class="text-secondary mb-0">Namn</h4>
                                             <input type="text" class="form-control" id="changeJuniorFormName" disabled>
@@ -184,25 +186,26 @@
                                             
                                         </div>
 
+                                        <div class="row" style="margin-top: 2em;">
+                                            <div class="col-md-3">
+                                                <button type="submit" class="btn btn-success" href="#" onclick="updateWishes()">Spara</button>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <button type="button" class="btn btn-secondary" href="#" onclick="validateWishes()">Kontrollera</button>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <button type="button" class="btn btn-primary" onclick="addMoreWishFields()">Fler önskemål</button>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <button type="button" class="btn btn-danger" href="#" onclick="removeJunior()">Ta bort junior</button>
+                                            </div>
+    
+                                        </div>
                                         
 
                                     </form>
                                     
-                                    <div class="row" style="margin-top: 2em;">
-                                        <div class="col-md-3">
-                                            <button class="btn btn-success" href="#" onclick="updateWishes()">Spara</button>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <button class="btn btn-secondary" href="#" onclick="validateWishes()">Kontrollera</button>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <button type="button" class="btn btn-primary" onclick="addMoreWishFields()">Fler önskemål</button>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <button class="btn btn-danger" href="#" onclick="removeJunior()">Ta bort junior</button>
-                                        </div>
-
-                                    </div>
+                                    
                                     
                                 </div>
                             </div>
@@ -217,7 +220,7 @@
             <div class="container">
                 <!-- BV Section Heading-->
                 <div class="text-center">
-                    <h2 class="page-section-heading d-inline-block text-white">Bivillkor</h2>
+                    <h2 class="page-section-heading d-inline-block text-white">Bivillkoren</h2>
                 </div>
                 <!-- Icon Divider-->
                 <div class="divider-custom divider-light">
@@ -229,7 +232,7 @@
                 
 
                 <!-- Båtparametrar Content-->
-                <form>
+                <form onSubmit="return false;">
                     <div class="form-group">
                         <div class="row">
                             <div class="col-md-6">
@@ -264,7 +267,7 @@
                  <!-- Tvingande BV Content-->
                 
 
-                <form>
+                <form onSubmit="return false;">
                     <div class="row">
                         <div class="col-md-4 text-center">
                             <h4 class="text-secondary mb-0">Namn</h4>
@@ -311,7 +314,7 @@
             <div class="container">
                 <!-- Run Section Heading-->
                 <div class="text-center">
-                    <h2 class="page-section-heading text-secondary d-inline-block mb-0">Kör algoritmen</h2>
+                    <h2 class="page-section-heading text-secondary d-inline-block mb-0">Resultatet</h2>
                 </div>
                 
                 <!-- Icon Divider-->
@@ -322,11 +325,11 @@
                 </div>
                 <!-- Run Section Content-->
                 <div class="row justify-content-md-center">
-                    <div class="text-center col-2">
-                        <button type="button" id="runButton" class="btn btn-secondary btn-lg shaker" style="margin-bottom: 2em;" onclick="optimize()">Optimera</button>
+                    <div class="text-center col">
+                        <button type="button" id="runButton" class="btn btn-secondary btn-lg shaker" style="float: right;" onclick="optimize()">Optimera!</button>
                     </div>
-                    <div class="text-center col-2">
-                        <button type="button" class="btn btn-secondary btn-lg" data-toggle="modal" data-target="#reset-all-modal">Nollställ</button>
+                    <div class="text-center col">
+                        <button type="button" class="btn btn-secondary btn-lg" style="float: left;" data-toggle="modal" data-target="#reset-all-modal">Nollställ</button>
                     </div>
 
                 </div>
