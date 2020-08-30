@@ -32,13 +32,6 @@ def recieve_data():
     create_std_constraints(model, variables, boat_parameters, juniors, pref_matrix)
     create_custom_constraints(model, variables, constraints, juniors, boat_parameters)
     
-    #objective = solver.Objective()
-    
-    #object_expression = [pref_matrix[i][j] * variables['y'][i, j, b] 
-    #                     for i in range(len(juniors)) for j in range(len(juniors)) for b in range(boat_parameters['noBoats']) if j != i]
-    #solver.Maximize(variables['worst_boat'] + solver.Sum(object_expression))
-    
-    #maximize z : v + sum{i in JUNIORER, j in JUNIORER, b in BATAR} p[i,j]*y[i,j,b];
     sum_exp = sum(pref_matrix[i][j] * variables['y'][i, j, b] 
                   for i in range(len(juniors)) for j in range(len(juniors)) for b in range(boat_parameters['noBoats']) if j != i)
     model.Maximize(variables['worst_boat'] + sum_exp)
@@ -49,6 +42,7 @@ def recieve_data():
     
     
     solver = cp_model.CpSolver()
+    #Avbryt lösaren efter 60 sekunder
     solver.parameters.max_time_in_seconds = 60.0
     status = solver.Solve(model)
     print(solver.ResponseStats())
