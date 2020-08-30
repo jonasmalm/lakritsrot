@@ -137,15 +137,19 @@ $('#newJuniorModal').on('shown.bs.modal', function () {
           '<input type="text" class="form-control" id="juniorPref1" placeholder="Önskemål">' + 
       '</div>' +
       '</div>');
+    addMoreWishFields();
     
     $("#changeJuniorModal").modal();
     $("#changeJuniorFormName")[0].value = name;
   
     junior = juniorList.filter(function(j) { if (j.name == name) { return j }})[0]
   
+    //Lägg till några extra pga skönt, därav två ggr
     while (junior.wishes.length > $("#juniorFormWishfields div.col").length) {
       addMoreWishFields();
+      addMoreWishFields();
     }
+
   
     wishes = junior.wishes.filter(function(s) { if (s) { return s }})
   

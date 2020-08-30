@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from ortools.linear_solver import pywraplp
+from ortools.sat.python import cp_model
 import numpy
 
 
@@ -9,7 +9,8 @@ bp = Blueprint('optimize', __name__)
 
 @bp.route('/', methods=['POST'])
 def recieve_data():
-    solver = pywraplp.Solver('birka_solver', pywraplp.Solver.CBC_MIXED_INTEGER_PROGRAMMING)
+    model = model = cp_model.CpModel()
+    
     
     juniors = request.get_json()[0]
     boat_parameters = request.get_json()[1]
@@ -20,55 +21,71 @@ def recieve_data():
     boat_parameters['noBoats'] = int(boat_parameters['noBoats'])
     
     variables = {}
-    variables['x'] = create_x_var(solver, juniors, boat_parameters['noBoats'])
-    variables['y'] = create_y_var(solver, juniors, boat_parameters['noBoats'])
-    variables['boat_used'] = create_boat_var(solver, boat_parameters['noBoats'])
-    variables['worst_boat'] = solver.IntVar(0, 1, 'worst_boat')
+    variables['x'] = create_x_var(model, juniors, boat_parameters['noBoats'])
+    variables['y'] = create_y_var(model, juniors, boat_parameters['noBoats'])
+    variables['boat_used'] = create_boat_var(model, boat_parameters['noBoats'])
+    variables['worst_boat'] = model.NewIntVar(0, 1, 'worst_boat')
     
     pref_matrix = create_pref_matrix(juniors)
     
-    create_std_constraints(solver, variables, boat_parameters, juniors, pref_matrix)
-    create_custom_constraints(solver, variables, constraints, juniors, boat_parameters)
+    create_std_constraints(model, variables, boat_parameters, juniors, pref_matrix)
+    create_custom_constraints(model, variables, constraints, juniors, boat_parameters)
     
-    objective = solver.Objective()
-    # In Python, you can also set the objective as follows.
-    # obj_expr = [data['obj_coeffs'][j] * x[j] for j in range(data['num_vars'])]
-    # solver.Maximize(solver.Sum(obj_expr))
+    #objective = solver.Objective()
     
-    object_expression = [pref_matrix[i][j] * variables['y'][i, j, b] 
-                         for i in range(len(juniors)) for j in range(len(juniors)) for b in range(boat_parameters['noBoats']) if j != i]
-    solver.Maximize(variables['worst_boat'] + solver.Sum(object_expression))
+    #object_expression = [pref_matrix[i][j] * variables['y'][i, j, b] 
+    #                     for i in range(len(juniors)) for j in range(len(juniors)) for b in range(boat_parameters['noBoats']) if j != i]
+    #solver.Maximize(variables['worst_boat'] + solver.Sum(object_expression))
     
     #maximize z : v + sum{i in JUNIORER, j in JUNIORER, b in BATAR} p[i,j]*y[i,j,b];
+    sum_exp = sum(pref_matrix[i][j] * variables['y'][i, j, b] 
+                  for i in range(len(juniors)) for j in range(len(juniors)) for b in range(boat_parameters['noBoats']) if j != i)
+    model.Maximize(variables['worst_boat'] + sum_exp)
     
     #Debug - skriv ut hela modellen!
-    print(solver.ExportModelAsLpFormat(False).replace('\\', '').replace(',_', ','), sep='\n')
+    #print(solver.ExportModelAsLpFormat(False).replace('\\', '').replace(',_', ','), sep='\n')
     
-    status = solver.Solve()
-    if status == pywraplp.Solver.OPTIMAL:
-        print('Objective value =', solver.Objective().Value())
+    
+    
+    solver = cp_model.CpSolver()
+    solver.parameters.max_time_in_seconds = 60.0
+    status = solver.Solve(model)
+    print(solver.ResponseStats())
+    
+    if status == cp_model.INFEASIBLE:
+        return dict(success=False, status='Infeasible')
+    if status == cp_model.MODEL_INVALID:
+        return dict(success=False, status='Model invalid')
+    if status == cp_model.UNKNOWN:
+        return dict(success=False, status='Unknown')
         
-    else:
-        print('The problem does not have an optimal solution.')
-        return dict(success=False)
     
-    retval = create_retval(variables, juniors, boat_parameters['noBoats'])
+    
+    
+    retval = create_retval(variables, juniors, boat_parameters['noBoats'], solver)
+    if status == cp_model.OPTIMAL:
+        retval['status'] = 'Optimal'
+    elif status == cp_model.FEASIBLE:
+        retval['status'] = 'Feasible'
+        
+    retval['solver_response'] = solver.ResponseStats()
+    
     print(retval)
     return jsonify(retval)
 
 #x[i, b] är 1 om jun i sitter i båt b, noll annars
-def create_x_var(solver, juniors, no_boats):
+def create_x_var(model, juniors, no_boats):
     
     x = {}
     
     for i in range(len(juniors)):
         for b in range(no_boats):
-            x[i, b] = solver.IntVar(0, 1, 'x[{}, Båt {}]'.format(i, b))
+            x[i, b] = model.NewIntVar(0, 1, 'x[Junior {}, Boat {}]'.format(i, b))
     
     return x
 
 #y[i, j, b] är 1 om jun i sitter med jun j i båt b, noll annars
-def create_y_var(solver, juniors, no_boats):
+def create_y_var(model, juniors, no_boats):
     
     y = {}
     
@@ -76,22 +93,22 @@ def create_y_var(solver, juniors, no_boats):
         for j in range(len(juniors)):
             for b in range(no_boats):
                 if i != j:
-                    y[i, j, b] = solver.IntVar(0, 1, 'y[{}, {}, Båt {}]'.format(i, j, b))
+                    y[i, j, b] = model.NewIntVar(0, 1, 'y[Jun i {}, Jun j {}, Boat {}]'.format(i, j, b))
     
     return y
 
 #boat_used[b] = 1 om båt b används, 0 f.ö.
-def create_boat_var(solver, no_boats):
+def create_boat_var(model, no_boats):
     boat_used = {}
     
     for b in range(no_boats):
-        boat_used[b] = solver.IntVar(0, 1, 'boat_used[{}]'.format(b))
+        boat_used[b] = model.NewIntVar(0, 1, 'boat_used[Boat {}]'.format(b))
     
     return boat_used
  
 #p[i, j] = 1 om junior i önskat att segla med junior j
 def create_pref_matrix(juniors):
-    p = numpy.zeros(shape=(len(juniors), len(juniors)))
+    p = numpy.zeros(shape=(len(juniors), len(juniors)), dtype=int)
     
     i = 0
     for junior_i in juniors:
@@ -104,36 +121,48 @@ def create_pref_matrix(juniors):
     
     return p
     
-def create_std_constraints(solver, variables, boat_parameters, juniors, pref_matrix):
-    #En junior i varje båt
+def create_std_constraints(model, variables, boat_parameters, juniors, pref_matrix):
+    
+    #En junior sitter i exakt en båt
     for i in range(len(juniors)):
-        constraint_exp = [variables['x'][i, b] for b in range(boat_parameters['noBoats'])]
-        solver.Add(solver.Sum(constraint_exp) == 1)
+        
+        #constraint_exp = [variables['x'][i, b] for b in range(boat_parameters['noBoats'])]
+        #model.Add(solver.Sum(constraint_exp) == 1)
+        model.Add(sum(variables['x'][i, b] for b in range(boat_parameters['noBoats'])) == 1)
         
     #min capacity
     for b in range(boat_parameters['noBoats']):
-        constraint_exp = [variables['x'][i, b] for i in range(len(juniors))]
-        solver.Add(solver.Sum(constraint_exp) >= boat_parameters['minCrew'] * variables['boat_used'][b])
+        sum_exp = sum(variables['x'][i, b] for i in range(len(juniors)))
+        model.Add(sum_exp >= boat_parameters['minCrew'] * variables['boat_used'][b])
+        #constraint_exp = [variables['x'][i, b] for i in range(len(juniors))]
+        #solver.Add(solver.Sum(constraint_exp) >= boat_parameters['minCrew'] * variables['boat_used'][b])
     
     #max capacity
     for b in range(boat_parameters['noBoats']):
-        constraint_exp = [variables['x'][i, b] for i in range(len(juniors))]
-        solver.Add(solver.Sum(constraint_exp) <= boat_parameters['maxCrew'] * variables['boat_used'][b])
+        sum_exp = sum(variables['x'][i, b] for i in range(len(juniors)))
+        model.Add(sum_exp <= boat_parameters['maxCrew'] * variables['boat_used'][b])
+                      
+        #constraint_exp = [variables['x'][i, b] for i in range(len(juniors))]
+        #solver.Add(solver.Sum(constraint_exp) <= boat_parameters['maxCrew'] * variables['boat_used'][b])
         
     #Koppling x till y (jun i med jun j) -->
     for i in range(len(juniors)):
         for j in range(len(juniors)):
             for b in range(boat_parameters['noBoats']):
                 if i != j:
-                    solver.Add(2 * variables['y'][i, j, b] <= variables['x'][i, b] + variables['x'][j, b])
+                    model.Add(2 * variables['y'][i, j, b] <= variables['x'][i, b] + variables['x'][j, b])
     
     #Sämsta båten --> målfunktion
     for b in range(boat_parameters['noBoats']):
-        constraint_exp = [pref_matrix[i][j] * variables['y'][i, j, b] for i in range(len(juniors)) for j in range(len(juniors)) if j!= i] 
-        solver.Add(variables['worst_boat'] <= solver.Sum(constraint_exp))
+        sum_exp = sum(pref_matrix[i][j] * variables['y'][i, j, b] for i in range(len(juniors)) for j in range(len(juniors)) if j!= i)
+        model.Add(variables['worst_boat'] <= sum_exp)
+        
+        #constraint_exp = [pref_matrix[i][j] * variables['y'][i, j, b] for i in range(len(juniors)) for j in range(len(juniors)) if j!= i] 
+        #solver.Add(variables['worst_boat'] <= solver.Sum(constraint_exp))
         
         
-def create_custom_constraints(solver, variables, constraints, juniors, boat_parameters):
+#Löser BV som tvingar juniorer att segla eller inte segla tsm
+def create_custom_constraints(model, variables, constraints, juniors, boat_parameters):
     for c in constraints:
         name1 = c['name1']
         name2 = c['name2']
@@ -141,15 +170,24 @@ def create_custom_constraints(solver, variables, constraints, juniors, boat_para
         i = list(filter(lambda j: juniors[j]['name'] == name1, range(len(juniors))))[0]
         j = list(filter(lambda j: juniors[j]['name'] == name2, range(len(juniors))))[0]
         
+        
         if c['mustSail']:
-            constraint_exp = [variables['y'][i, j, b] for b in range(boat_parameters['noBoats'])]
-            solver.Add(solver.Sum(constraint_exp) == 1)
+            #Måste segla --> summa över b av y[i,j,b] för (i,j) == 1
+            sum_exp = sum(variables['y'][i, j, b] for b in range(boat_parameters['noBoats']))
+            model.Add(sum_exp == 1)
+            
+            #constraint_exp = [variables['y'][i, j, b] for b in range(boat_parameters['noBoats'])]
+            #solver.Add(solver.Sum(constraint_exp) == 1)
         else:
-            constraint_exp = [variables['x'][i, b] + variables['x'][j, b] for b in range(boat_parameters['noBoats'])]
-            solver.Add(solver.Sum(constraint_exp) <= 1)
+            #Får inte segla:
+            sum_exp = sum(variables['x'][i, b] + variables['x'][j, b] for b in range(boat_parameters['noBoats']))
+            model.Add(sum_exp == 1)
+            
+            #constraint_exp = [variables['x'][i, b] + variables['x'][j, b] for b in range(boat_parameters['noBoats'])]
+            #solver.Add(solver.Sum(constraint_exp) <= 1)
             
         
-def create_retval(variables, juniors, no_boats):
+def create_retval(variables, juniors, no_boats, solver):
     
     retval = {}
     retval['boats'] = {}
@@ -158,7 +196,8 @@ def create_retval(variables, juniors, no_boats):
     for b in range(no_boats):
         retval['boats'][b] = []
         for i in range(len(juniors)):
-            if variables['x'][i, b].solution_value() == 1:
+            if solver.Value(variables['x'][i, b]) == 1:
+            #if variables['x'][i, b].solution_value() == 1:
                 retval['boats'][b].append(juniors[i]['name'])
                 
     retval['success'] = True

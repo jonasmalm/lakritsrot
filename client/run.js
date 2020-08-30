@@ -35,6 +35,9 @@ function optimize() {
         }, 3000);
         return 0;
 
+    } else {
+        $('#runButton')[0].innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right: 0.2em"></i> Optimerar';
+        $('#runButton')[0].disabled = true;
     }
 
     let payload = [];
@@ -48,7 +51,10 @@ function optimize() {
         contentType: "application/json",
         data: JSON.stringify(payload),
         success: function (response) {
+            //DEBUG
             resp = response
+
+            $('#runButton')[0].disabled = false;
             if (response.success) {
                 $('#runButton')[0].innerHTML = '<i class="fa fa-check"></i> Klar!';
 
