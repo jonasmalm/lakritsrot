@@ -19,6 +19,7 @@ def recieve_data():
     boat_parameters['minCrew'] = int(boat_parameters['minCrew'])
     boat_parameters['maxCrew'] = int(boat_parameters['maxCrew'])
     boat_parameters['noBoats'] = int(boat_parameters['noBoats'])
+    boat_parameters['useAllBoats'] = bool(boat_parameters['useAllBoats'])
     
     variables = {}
     variables['x'] = create_x_var(model, juniors, boat_parameters['noBoats'])
@@ -70,7 +71,6 @@ def recieve_data():
         
     retval['solver_response'] = solver.ResponseStats()
     
-    print(retval)
     return jsonify(retval)
 
 #x[i, b] är 1 om jun i sitter i båt b, noll annars
@@ -133,14 +133,22 @@ def create_std_constraints(model, variables, boat_parameters, juniors, pref_matr
     #min capacity
     for b in range(boat_parameters['noBoats']):
         sum_exp = sum(variables['x'][i, b] for i in range(len(juniors)))
-        model.Add(sum_exp >= boat_parameters['minCrew'] * variables['boat_used'][b])
+        
+        if boat_parameters['useAllBoats']:
+            model.Add(sum_exp >= boat_parameters['minCrew'])
+        else:
+            model.Add(sum_exp >= boat_parameters['minCrew'] * variables['boat_used'][b])
         #constraint_exp = [variables['x'][i, b] for i in range(len(juniors))]
         #solver.Add(solver.Sum(constraint_exp) >= boat_parameters['minCrew'] * variables['boat_used'][b])
     
     #max capacity
     for b in range(boat_parameters['noBoats']):
         sum_exp = sum(variables['x'][i, b] for i in range(len(juniors)))
-        model.Add(sum_exp <= boat_parameters['maxCrew'] * variables['boat_used'][b])
+        
+        if boat_parameters['useAllBoats']:
+            model.Add(sum_exp <= boat_parameters['maxCrew'])
+        else:
+            model.Add(sum_exp <= boat_parameters['maxCrew'] * variables['boat_used'][b])
                       
         #constraint_exp = [variables['x'][i, b] for i in range(len(juniors))]
         #solver.Add(solver.Sum(constraint_exp) <= boat_parameters['maxCrew'] * variables['boat_used'][b])

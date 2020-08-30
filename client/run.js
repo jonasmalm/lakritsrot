@@ -5,7 +5,8 @@ function canRun() {
     }
 
     //Inte fyllt i alla siffror --> Kör ej
-    let data = getBoatNumbers();
+    //Kollar bara siffror och inte på useAllBoats
+    let data = getBoatNumbers().splice(3);
     if (Object.values(data).some(num => num == '')) {
         return false;
     }

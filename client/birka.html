@@ -245,7 +245,8 @@
                                 <select id="useAllBoats" class="form-control">
                                     <option selected>Nej</option>
                                     <option>Ja</option>
-                                  </select>
+                                </select>
+                                <div class="invalid-feedback" id="useAllBoatsFeedback">Det finns för få juniorer!</div>
                             </div>
                         </div>
                         <div class="row">
@@ -324,7 +325,7 @@
                     <div class="divider-custom-line"></div>
                 </div>
                 <!-- Run Section Content-->
-                <div class="row justify-content-md-center">
+                <div class="row justify-content-md-center" style="margin-bottom: 2em;">
                     <div class="text-center col">
                         <button type="button" id="runButton" class="btn btn-secondary btn-lg shaker" style="float: right;" onclick="optimize()">Optimera!</button>
                     </div>

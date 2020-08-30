@@ -99,6 +99,10 @@ $(document).ready(function () {
         checkValidBoats();
     });
 
+    $('#useAllBoats').change(function() {
+        checkValidBoats()
+    })
+
     $('#bv0-name1').change(function () {
         validateBV(0);
         saveBV();
@@ -112,7 +116,7 @@ $(document).ready(function () {
 });
 
 function checkValidBoats() {
-    let ids = ['#noBoats', '#minCrew', '#maxCrew'];
+    let ids = ['#noBoats', '#minCrew', '#maxCrew', '#useAllBoats'];
     let data = getBoatNumbers();
     let noJuniors = $("#noJuniors")[0].value;
 
@@ -130,6 +134,17 @@ function checkValidBoats() {
             $('#maxCrewFeedback')[0].innerHTML = 'För få platser! Öka antal båtar eller maximal besättning!';
         }
     }
+
+    //För många platser
+    if (data["noBoats"] !== "" && data["maxCrew"] !== "") {
+
+        if (data['useAllBoats']) {
+            if (data["noBoats"] * data["minCrew"] > noJuniors) {
+                $('#useAllBoats').addClass('is-invalid');
+            }
+        }
+    }
+
 
 
 
@@ -160,6 +175,7 @@ function getBoatNumbers() {
     data["noBoats"] = $("#noBoats")[0].value;
     data["minCrew"] = $("#minCrew")[0].value;
     data["maxCrew"] = $("#maxCrew")[0].value;
+    data['useAllBoats'] = $('#useAllBoats')[0].selectedIndex != 0;
 
     return data;
 }
