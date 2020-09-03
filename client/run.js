@@ -48,7 +48,7 @@ function optimize() {
 
     $.ajax({
         type: 'POST',
-        url: "http://localhost:5000" + '/optimize/',
+        url: window.location.href + 'optimize/',
         contentType: "application/json",
         data: JSON.stringify(payload),
         success: function (response) {
