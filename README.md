@@ -4,9 +4,29 @@ At the sailing camp SSS Rastaholm, once each week there is a day when the sailin
 Check out the latest version deployed at [Heroku](https://birka-algorithm.herokuapp.com/)!
 
 ## Model
- The model is implemented using Google's OR-tools and solved using the CP-SAT solver. The objective function is below. Testing seems to indicate that lambda = 1 gives the most balanced results and is the value used in the model. 
+ The model is implemented using Google's OR-tools and solved using the CP-SAT solver. 
 
-> max z = wishes fulfilled in each boat + lambda * wishes fulfilled in the boat with the lowest number of fulfilled wishes
+### Sets
+![Sets](images/sets.png)
+
+### Parameters
+![Params](images/parameters.png)
+
+### Variables
+![Variables](images/variables.png)
+
+### Objective function
+![Objective funtion](images/obj_funct.png)
+
+### Constraints
+#### Connecting variables
+![Constraints for variable connections](images/constr_var.png)
+
+#### Capacity constrains
+![Capacity Constraints](images/constr_cap.png)
+
+#### Must or can't be placed together
+![Together constrains](images/constr_together.png)
 
 
 ## License
