@@ -41,20 +41,26 @@ async function optimize() {
         $('#runButton')[0].disabled = true;
     }
 
+    // Calculating iteration timesplit, maximum runtime is 20 seconds (server timeout issues)
+    maxTime = $('#maxTimeControl').val()
+    let iterations = Math.ceil(maxTime / 20)
+    maxTime = maxTime / iterations
+
     let payload = [];
     payload[0] = juniorList;
     payload[1] = boatParams;
     payload[2] = bivillkor;
+    payload[3] = maxTime;
 
     let response = await do_post(payload)
-    var iterations = 1
+    var i = 1
     while (true) {
-        payload[3] = response.hints
-        response = await do_post(payload)
-        if (response.status == 'Optimal' || iterations > 3) {
+        if (response.status == 'Optimal' || i >= iterations) {
             break;
         }
-        iterations ++
+        payload[4] = response.hints
+        response = await do_post(payload)
+        i ++
     }
     output_response(response)
     
@@ -106,6 +112,7 @@ function output_response(response) {
         return null
     }
 
+    $('#wishes-fulfilled')[0].innerHTML = response.objective_value + ' uppfyllda önskningar'
     $('#resultDisplay').html('')
 
     //Hjälpvariabel för utskrift av rätt båtnummer

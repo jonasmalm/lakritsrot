@@ -15,6 +15,7 @@ def recieve_data():
     juniors = request.get_json()[0]
     boat_parameters = request.get_json()[1]
     constraints = request.get_json()[2]
+    maxTime = int(request.get_json()[3])
     
     boat_parameters['minCrew'] = int(boat_parameters['minCrew']) if boat_parameters['minCrew'] else 0
     boat_parameters['noBoats'] = int(boat_parameters['noBoats'])
@@ -40,14 +41,14 @@ def recieve_data():
     #print(solver.ExportModelAsLpFormat(False).replace('\\', '').replace(',_', ','), sep='\n')
     
     # Check if there are hints, i.e. not first iteration
-    if len(request.get_json()) > 3:
-        hints = request.get_json()[3]
+    if len(request.get_json()) > 4:
+        hints = request.get_json()[4]
         create_hints(variables, hints, juniors, boat_parameters['noBoats'], model)
     
     
     solver = cp_model.CpSolver()
     #Avbryt lösaren efter 60 sekunder
-    solver.parameters.max_time_in_seconds = 15.0
+    solver.parameters.max_time_in_seconds = maxTime
     status = solver.Solve(model)
     print(solver.ResponseStats())
     
@@ -69,6 +70,7 @@ def recieve_data():
         retval['hints'] = get_current_variable_values(variables, juniors, boat_parameters['noBoats'], solver)
         
     retval['solver_response'] = solver.ResponseStats()
+    retval['objective_value'] = solver.ObjectiveValue()
     
     return jsonify(retval)
 
