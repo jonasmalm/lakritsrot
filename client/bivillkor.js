@@ -88,14 +88,17 @@ $(document).ready(function () {
     });
 
     $("#maxCrew").change(function () {
-        if ($("#maxCrew").val() < 0) {
-            $("#maxCrew").val(0);
+        if ($("#maxCrew").val() != "") {
+            if ($("#maxCrew").val() < 0) {
+                $("#maxCrew").val(0);
+            }
+    
+            if (!Number.isInteger($("#maxCrew").val())) {
+                $("#maxCrew").val(Math.floor($("#maxCrew").val()));
+            }
+    
+            
         }
-
-        if (!Number.isInteger($("#maxCrew").val())) {
-            $("#maxCrew").val(Math.floor($("#maxCrew").val()));
-        }
-
         checkValidBoats();
     });
 
@@ -124,6 +127,12 @@ function checkValidBoats() {
         $(id)[0].classList.remove('is-invalid');
         $(id)[0].classList.remove('is-valid');
     });
+
+    //Antal båtar ej angetts
+    if (data["noBoats"] == "") {
+        $('#noBoats').addClass('is-invalid');
+        $('#noBoatsFeedback')[0].innerHTML = 'Minst en båt krävs!';
+    }
 
     //För få platser
     if (data["noBoats"] !== "" && data["maxCrew"] !== "") {

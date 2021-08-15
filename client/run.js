@@ -22,6 +22,7 @@ function canRun() {
     return true;
 
 }
+//Debugging
 var resp
 function optimize() {
     $('#runButton').removeClass('shaker');
@@ -90,6 +91,8 @@ function optimize() {
                         
                         '<h4 class="juniorName">Båt ' +  n + '</h4>';
                     n ++
+
+                    boatHTML += getPrintoutHTML('Junior', 'Uppfyllda önskningar')
                     
 
                     //För varje namn i båten
@@ -104,14 +107,7 @@ function optimize() {
                             }
                         });
 
-                        boatHTML += '<div class="row">' +
-                        '<div class="col" style="text-align: center">' +
-                            '<h5>' + junior.name + '</h5>' +
-                        '</div>' +
-                        '<div class="col">' +
-                            '<h5 style="text-align: center">' + wishes + '</h5>' +
-                        '</div>' +
-                    '</div>';
+                        boatHTML += getPrintoutHTML(junior.name, wishes)
                     }
 
 
@@ -128,4 +124,15 @@ function optimize() {
    
 
     
+}
+
+function getPrintoutHTML(name, wishes) {
+    return '<div class="row">' +
+    '<div class="col" style="text-align: center">' +
+        '<h5>' + name + '</h5>' +
+    '</div>' +
+    '<div class="col">' +
+        '<h5 style="text-align: center">' + wishes + '</h5>' +
+    '</div>' +
+    '</div>';
 }
