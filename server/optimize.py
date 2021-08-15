@@ -39,11 +39,15 @@ def recieve_data():
     #Debug - skriv ut hela modellen!
     #print(solver.ExportModelAsLpFormat(False).replace('\\', '').replace(',_', ','), sep='\n')
     
+    # Check if there are hints, i.e. not first iteration
+    if len(request.get_json()) > 3:
+        hints = request.get_json()[3]
+        create_hints(variables, hints, juniors, boat_parameters['noBoats'], model)
     
     
     solver = cp_model.CpSolver()
     #Avbryt lösaren efter 60 sekunder
-    solver.parameters.max_time_in_seconds = 60.0
+    solver.parameters.max_time_in_seconds = 15.0
     status = solver.Solve(model)
     print(solver.ResponseStats())
     
@@ -62,6 +66,7 @@ def recieve_data():
         retval['status'] = 'Optimal'
     elif status == cp_model.FEASIBLE:
         retval['status'] = 'Feasible'
+        retval['hints'] = get_current_variable_values(variables, juniors, boat_parameters['noBoats'], solver)
         
     retval['solver_response'] = solver.ResponseStats()
     
@@ -126,7 +131,7 @@ def create_std_constraints(model, variables, boat_parameters, juniors, pref_matr
         sum_exp = sum(variables['x'][i, b] for i in range(len(juniors)))
         
         if boat_parameters['useAllBoats']:
-            model.Add(sum_exp >= boat_parameters['minCrew'])
+            model.Add(sum_exp >= max(boat_parameters['minCrew'], 1))
         else:
             model.Add(sum_exp >= boat_parameters['minCrew'] * variables['boat_used'][b])
 
@@ -181,7 +186,19 @@ def create_custom_constraints(model, variables, constraints, juniors, boat_param
             
             #constraint_exp = [variables['x'][i, b] + variables['x'][j, b] for b in range(boat_parameters['noBoats'])]
             #solver.Add(solver.Sum(constraint_exp) <= 1)
-            
+
+def create_hints(variables, hints, juniors, no_boats, model):
+    # Hints for X
+    for i in range(len(juniors)):
+        for b in range(no_boats):
+            model.AddHint(variables['x'][i, b], hints['x'][str(i)][str(b)])
+    
+    # Hints for Y
+    for i in range(len(juniors)):
+        for j in range(len(juniors)):
+            for b in range(no_boats):
+                if i != j:
+                    model.AddHint(variables['y'][i, j, b], hints['y'][str(i)][str(j)][str(b)])
         
 def create_retval(variables, juniors, no_boats, solver):
     
@@ -200,9 +217,25 @@ def create_retval(variables, juniors, no_boats, solver):
     
     return retval
         
+def get_current_variable_values(variables, juniors, no_boats, solver):
+    current_values = {}
     
-        
+    current_values['x'] = {}
+    for i in range(len(juniors)):
+        current_values['x'][i] = {}
+        for b in range(no_boats):
+            current_values['x'][i][b] = solver.Value(variables['x'][i, b])
     
+    current_values['y'] = {}
+    for i in range(len(juniors)):
+        current_values['y'][i] = {}
+        for j in range(len(juniors)):
+            current_values['y'][i][j] = {}
+            for b in range(no_boats):
+                if i != j:
+                    current_values['y'][i][j][b] = solver.Value(variables['y'][i, j, b])
+
+    return current_values    
     
     
     

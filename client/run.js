@@ -22,9 +22,8 @@ function canRun() {
     return true;
 
 }
-//Debugging
-var resp
-function optimize() {
+
+async function optimize() {
     $('#runButton').removeClass('shaker');
 
     if (!canRun()) {
@@ -47,83 +46,106 @@ function optimize() {
     payload[1] = boatParams;
     payload[2] = bivillkor;
 
-    $.ajax({
+    let response = await do_post(payload)
+    var iterations = 1
+    while (true) {
+        payload[3] = response.hints
+        response = await do_post(payload)
+        if (response.status == 'Optimal' || iterations > 3) {
+            break;
+        }
+        iterations ++
+    }
+    output_response(response)
+    
+}
+
+async function do_post(payload) {
+    const result = await $.ajax({
         type: 'POST',
         url: window.location.href + 'optimize/',
         contentType: "application/json",
         data: JSON.stringify(payload),
         success: function (response) {
-            //DEBUG
-            resp = response
-
-            $('#runButton')[0].disabled = false;
-            if (response.success) {
-                $('#runButton')[0].innerHTML = '<i class="fa fa-check"></i> Klar!';
-
-                setTimeout(function() {
-                    $('#runButton').addClass('shaker');
-                    $('#runButton')[0].innerHTML = 'Kör igen!';
-                }, 10000);
-
-            } else {
-                $('#runButton')[0].innerHTML = 'Problemet saknar lösning!';
-                $('#runButton').addClass('btn-danger');
-
-                setTimeout(function() {
-                    $('#runButton').removeClass('btn-danger');
-                    $('#runButton')[0].innerHTML = 'Optimera!';
-                    $('#runButton').addClass('shaker');
-                }, 5000);
-                return null
-            }
-
-            $('#resultDisplay').html('')
-            //För varje båt som skickas i svaret
-
-            //Hjälpvariabel för utskrift av rätt båtnummer
-            let n = 1;
-            for (let i = 0; i < Object.keys(response.boats).length; i++) {
-                
-                //Om båten inte är tom (kan hända!)
-                if (!$.isEmptyObject(response.boats[i])) {
-                    let boatHTML = '<div class="col-md-6 col-lg-4 mb-5">' +
-                    '<div class="portfolio-item mx-auto" style="background-color: #a3bfe9; padding-bottom: 1em; cursor: default;">' +
-                        
-                        '<h4 class="juniorName">Båt ' +  n + '</h4>';
-                    n ++
-
-                    boatHTML += getPrintoutHTML('Junior', 'Uppfyllda önskningar')
-                    
-
-                    //För varje namn i båten
-                    for (let j = 0; j < Object.keys(response.boats[i]).length; j ++) {
-                        let junior = juniorList.find(jun => jun.name == response.boats[i][j])
-                        let wishes = 0
-
-                        //Räknar ut hur många önskemål varje person har fått uppfyllt
-                        response.boats[i].forEach(element => {
-                            if (junior.wishes.includes(element)) {
-                                wishes ++
-                            }
-                        });
-
-                        boatHTML += getPrintoutHTML(junior.name, wishes)
-                    }
-
-
-                    $('#resultDisplay').append(boatHTML + '</div></div>') 
-                    
-                    
-                }
-
-            }            
-
-
+            return response
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            error_response('Något gick fel... Hör av er till Jonas')
+            console.log(XMLHttpRequest)
+            console.log(textStatus)
+            console.log(errorThrown)
         }
     });
-   
 
-    
+    return result;
+}
+
+function error_response(text) {
+    $('#runButton')[0].innerHTML = text;
+        $('#runButton').addClass('btn-danger');
+
+        setTimeout(function() {
+            $('#runButton').removeClass('btn-danger');
+            $('#runButton')[0].innerHTML = 'Optimera!';
+            $('#runButton').addClass('shaker');
+        }, 5000);
+}
+
+function output_response(response) {
+    $('#runButton')[0].disabled = false;
+    if (response.success) {
+        $('#runButton')[0].innerHTML = '<i class="fa fa-check"></i> Klar!';
+
+        setTimeout(function() {
+            $('#runButton').addClass('shaker');
+            $('#runButton')[0].innerHTML = 'Kör igen!';
+        }, 10000);
+
+    } else {
+        error_response('Problemet saknar lösning!')
+        return null
+    }
+
+    $('#resultDisplay').html('')
+
+    //Hjälpvariabel för utskrift av rätt båtnummer
+    let n = 1;
+    //För varje båt som skickas i svaret
+    for (let i = 0; i < Object.keys(response.boats).length; i++) {
+        
+        //Om båten inte är tom (kan hända!)
+        if (!$.isEmptyObject(response.boats[i])) {
+            let boatHTML = '<div class="col-md-6 col-lg-4 mb-5">' +
+            '<div class="portfolio-item mx-auto" style="background-color: #a3bfe9; padding-bottom: 1em; cursor: default;">' +
+                
+                '<h4 class="juniorName">Båt ' +  n + '</h4>';
+            n ++
+
+            boatHTML += getPrintoutHTML('Junior', 'Uppfyllda önskningar')
+            
+
+            //För varje namn i båten
+            for (let j = 0; j < Object.keys(response.boats[i]).length; j ++) {
+                let junior = juniorList.find(jun => jun.name == response.boats[i][j])
+                let wishes = 0
+
+                //Räknar ut hur många önskemål varje person har fått uppfyllt
+                response.boats[i].forEach(element => {
+                    if (junior.wishes.includes(element)) {
+                        wishes ++
+                    }
+                });
+
+                boatHTML += getPrintoutHTML(junior.name, wishes)
+            }
+
+
+            $('#resultDisplay').append(boatHTML + '</div></div>') 
+            
+            
+        }
+
+    }
 }
 
 function getPrintoutHTML(name, wishes) {
