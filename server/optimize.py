@@ -16,9 +16,9 @@ def recieve_data():
     boat_parameters = request.get_json()[1]
     constraints = request.get_json()[2]
     
-    boat_parameters['minCrew'] = int(boat_parameters['minCrew'])
-    boat_parameters['maxCrew'] = int(boat_parameters['maxCrew'])
+    boat_parameters['minCrew'] = int(boat_parameters['minCrew']) if boat_parameters['minCrew'] else 0
     boat_parameters['noBoats'] = int(boat_parameters['noBoats'])
+    boat_parameters['maxCrew'] = int(boat_parameters['maxCrew']) if boat_parameters['maxCrew'] else len(juniors)
     boat_parameters['useAllBoats'] = bool(boat_parameters['useAllBoats'])
     
     variables = {}
@@ -119,9 +119,6 @@ def create_std_constraints(model, variables, boat_parameters, juniors, pref_matr
     
     #En junior sitter i exakt en båt
     for i in range(len(juniors)):
-        
-        #constraint_exp = [variables['x'][i, b] for b in range(boat_parameters['noBoats'])]
-        #model.Add(solver.Sum(constraint_exp) == 1)
         model.Add(sum(variables['x'][i, b] for b in range(boat_parameters['noBoats'])) == 1)
         
     #min capacity
@@ -132,20 +129,17 @@ def create_std_constraints(model, variables, boat_parameters, juniors, pref_matr
             model.Add(sum_exp >= boat_parameters['minCrew'])
         else:
             model.Add(sum_exp >= boat_parameters['minCrew'] * variables['boat_used'][b])
-        #constraint_exp = [variables['x'][i, b] for i in range(len(juniors))]
-        #solver.Add(solver.Sum(constraint_exp) >= boat_parameters['minCrew'] * variables['boat_used'][b])
+
     
     #max capacity
-    for b in range(boat_parameters['noBoats']):
-        sum_exp = sum(variables['x'][i, b] for i in range(len(juniors)))
-        
-        if boat_parameters['useAllBoats']:
-            model.Add(sum_exp <= boat_parameters['maxCrew'])
-        else:
-            model.Add(sum_exp <= boat_parameters['maxCrew'] * variables['boat_used'][b])
-                      
-        #constraint_exp = [variables['x'][i, b] for i in range(len(juniors))]
-        #solver.Add(solver.Sum(constraint_exp) <= boat_parameters['maxCrew'] * variables['boat_used'][b])
+    if boat_parameters['noBoats']:
+        for b in range(boat_parameters['noBoats']):
+            sum_exp = sum(variables['x'][i, b] for i in range(len(juniors)))
+            
+            if boat_parameters['useAllBoats']:
+                model.Add(sum_exp <= boat_parameters['maxCrew'])
+            else:
+                model.Add(sum_exp <= boat_parameters['maxCrew'] * variables['boat_used'][b])
         
     #Koppling x till y (jun i med jun j) -->
     for i in range(len(juniors)):
