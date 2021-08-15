@@ -328,12 +328,24 @@
 
                 <div class="row" style="margin-top: 2em">
                     <div class="col ml-auto">
-                        <p class="pre-wrap lead" style="text-align: center;">När du trycker på optimera kommer algoritmen söka efter den bästa lösningen i högst en minut, sedan visas resultatet nedan. Bredvid namnet på en junior visas det antal önskningar som uppfyllts för denna person.</p>
+                        <p class="pre-wrap lead" style="text-align: center;">När du trycker på optimera kommer algoritmen söka efter den bästa lösningen, sedan visas resultatet nedan. Du kan välja hur länge du vill att algoritmen söker med slidern nedan. Längre söktid kan skapa något bättre lösningar.</p>
                     </div>
                 </div>
-                    
 
-                <div class="row justify-content-md-center" style="margin-bottom: 2em;">
+                <div class="row" style="margin-top: 2em">
+                    <div class="text-center col">
+                        <h4 class="text-secondary mb-0">Maximal körtid</h4>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="text-center col">
+                        <button id="maxTime" type="button" class="btn btn-primary btn-lg">10 sekunder</button>
+                    </div>
+                    <input type="range" class="form-control-range" min="10" max="60" value="10" id="maxTimeControl" onInput="$('#maxTime').html($(this).val() + ' sekunder')">
+                
+                </div>    
+
+                <div class="row justify-content-md-center" style="margin-top: 2em; margin-bottom: 2em;">
                     <div class="text-center col">
                         <button type="button" id="runButton" class="btn btn-secondary btn-lg shaker" style="float: right;" onclick="optimize()">Optimera!</button>
                     </div>
@@ -343,6 +355,11 @@
 
                 </div>
                 
+                <div class="row" style="margin-bottom: 2em">
+                    <div class="text-center col">
+                        <h4 class="text-secondary mb-0" id="wishes-fulfilled"></h4>
+                    </div>
+                </div>
 
                 <div class="row justify-content-center" id="resultDisplay">
                     <!-- Båtar i resultatet hamnar här-->
